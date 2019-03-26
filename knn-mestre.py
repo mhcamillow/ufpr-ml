@@ -48,7 +48,7 @@ def main(data):
         # cria a matriz de confusao
         cm = confusion_matrix(y_test, y_pred)
         print cm
-        
+
 	pl.matshow(cm)
 	pl.colorbar()
 	pl.show()
