@@ -9,7 +9,7 @@ from sklearn.datasets import load_svmlight_file
 class CamilloKNN():
 
     def __init__(self, n_neighbors):
-        self.n_neighbors = n_neighbors
+        self.n_neighbors = int(n_neighbors)
 
     def fit(self, train_examples, train_labels):
         self.train_examples = train_examples
@@ -18,27 +18,22 @@ class CamilloKNN():
     
     def predict(self, test_data):
         predicted = []
-        t1_total = time.time()
-        time_calculating_distances = 0
-        time_getting_closest_elements = 0
         for test in test_data:
-            t1 = time.time()
             distances = self.get_distances(test)
-            time_calculating_distances += time.time() - t1
-
-            t1 = time.time()
             closest_k_elements = self.get_first_n_elements(distances, self.n_neighbors)
-            time_getting_closest_elements += time.time() - t1
-
             guess_label = self.get_closest_class(closest_k_elements)
             predicted.append(guess_label)
-        
-        total_time = time.time() - t1_total
-        print 'Time spent calculating distances: ' + str(round(time_calculating_distances, 2)) + '(' + str(round(time_calculating_distances / total_time, 2)) + ')'
-        print 'Time spent getting closest elements: ' + str(round(time_getting_closest_elements, 2)) + '(' + str(round(time_getting_closest_elements / total_time, 2)) + ')'
-        print 'Total time: ' + str(total_time)
+
         return predicted
     
+    def score(self, confusion_matrix):
+        right_guesses = 0
+        total = 0
+        for i in range(len(confusion_matrix)):
+            right_guesses += confusion_matrix[i][i]
+        total = sum(sum(confusion_matrix))
+        return round(right_guesses / total, 4)
+
     def get_distances(self, test):
         distances = []
 

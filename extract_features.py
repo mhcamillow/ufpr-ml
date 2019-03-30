@@ -6,7 +6,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import LabelEncoder
 
 def load_data(filepath):
-    return pd.read_csv(filepath, header = 0, sep = ',')
+    return pd.read_csv(filepath, header = 0, sep = ',', encoding = "ISO-8859-1")
 
 def encode(labels):
     lblEncoder = LabelEncoder()
@@ -35,21 +35,21 @@ def export(labels, matrix, filename):
 
 def main(train_data, test_data, max_features):
 
-    print "Loading data"
+    print("Loading data")
     train_data = load_data(train_data)
     test_data = load_data(test_data)
     
-    print "Encoding data"
+    print("Encoding data")
     train_labels = encode(train_data['label'])
     test_labels = encode(test_data['label'])
 
-    print "Running tf-idf code"
+    print("Running tf-idf code")
     train_features, test_features = extract_features(train_data['review'], test_data['review'], max_features)
 
     t1_export = time.time()
     export(test_labels, test_features.toarray(), 'test-features.txt')
     export(train_labels, train_features.toarray(), 'train-features.txt')
-    print "Time to export (seconds): " + str(time.time() - t1_export)
+    print("Time to export (seconds): " + str(time.time() - t1_export))
 
 if __name__ == "__main__":
     if len(sys.argv) != 4:
@@ -57,4 +57,4 @@ if __name__ == "__main__":
     
     t1_start = time.time()
     main(sys.argv[1], sys.argv[2], sys.argv[3])
-    print "Finished. Total time (seconds): " + str(time.time() - t1_start)
+    print("Finished. Total time (seconds): " + str(time.time() - t1_start))

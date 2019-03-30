@@ -9,49 +9,28 @@ import CamilloKNN
 from sklearn.metrics import confusion_matrix
 from sklearn.datasets import load_svmlight_file
 from sklearn import preprocessing
-import pylab as pl
 
-def main(train_data, test_data):
-
-    # loads data
-    print "Loading data..."
+def main(train_data, test_data, k):
     train_features, train_classes = load_svmlight_file(train_data)
     test_features, test_classes = load_svmlight_file(test_data)
 
-    neigh = CamilloKNN.CamilloKNN(n_neighbors=3)
+    neigh = CamilloKNN.CamilloKNN(n_neighbors=k)
     neigh.fit(train_features.toarray(), train_classes)
 
-    print 'Predicting...'
     t1 = time.time()
     test_predictions = neigh.predict(test_features.toarray())
-    print 'Time to predict (seconds): ' + str(time.time() - t1)
-
+    print('Time to predict (seconds): ' + str(time.time() - t1))
+    
     cm = confusion_matrix(test_classes, test_predictions)
-    print 'Confusion matrix:'
-    print cm
-
-    tp = float(cm[0][0])
-    tn = float(cm[1][1])
-    fp = float(cm[0][1])
-    fn = float(cm[1][0])
-
-    acc = (tp + tn) / (tp + tn + fp + fn)
-    precision = (tp) / (tp + fp)
-    recall = (tp) / (tp + fn)
-    f1score = 2 * ((precision * recall) / (precision + recall))
-    print 'Accuracy: ' + str(acc)
-    print 'Precision: ' + str(precision)
-    print 'Recall: ' + str(recall)
-    print 'F1 Score: ' + str(f1score)
-
-    pl.matshow(cm)
-    pl.colorbar()
-    pl.show()
+    acc = neigh.score(cm)
+    print("Score: {0}".format(acc))
+    print('Confusion matrix:')
+    print(cm)
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        sys.exit("Use: knn.py <train_data> <test_data>")
+    if len(sys.argv) != 4:
+        sys.exit("Use: knn.py <train_data> <test_data> <k>")
 
-    main(sys.argv[1], sys.argv[2])
+    main(sys.argv[1], sys.argv[2], sys.argv[3])
 
 
