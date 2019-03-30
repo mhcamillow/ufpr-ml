@@ -19,7 +19,7 @@ def main(train_data, test_data, k):
 
     t1 = time.time()
     test_predictions = neigh.predict(test_features.toarray())
-    print('Time to predict (seconds): ' + str(time.time() - t1))
+    print('Time to predict: ' + str(round(time.time() - t1, 4)) + " seconds.")
     
     cm = confusion_matrix(test_classes, test_predictions)
     acc = neigh.score(cm)
