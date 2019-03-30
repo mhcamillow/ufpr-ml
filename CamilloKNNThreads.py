@@ -59,10 +59,9 @@ class CamilloKNN():
         for train in self.train_examples:
             dif = np.subtract(train, test)
             pow_dif = np.power(dif, 2)
-            sum_pow_dif = sum(pow_dif)
-            sqrt_sum_pow_dif = math.sqrt(sum_pow_dif) 
+            sqrt_sum_pow_dif = math.sqrt(sum(pow_dif)) 
             distances.append(sqrt_sum_pow_dif)
-        
+
         return distances
     
     def get_first_n_elements(self, array, n):
