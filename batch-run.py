@@ -7,6 +7,9 @@ import time
 import math
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import confusion_matrix
 from sklearn.datasets import load_svmlight_file
 from sklearn import preprocessing
@@ -17,6 +20,11 @@ from time import gmtime, strftime
 file_to_write = strftime("%Y-%m-%d-%H-%M-%S", gmtime()) + ".txt"
 
 def main(train_data, test_data):
+
+	# classifier = KNeighborsClassifier(n_neighbors=3, metric='euclidean')
+	# classifier = GaussianNB()
+	# classifier = LinearDiscriminantAnalysis()
+	classifier = LogisticRegression(random_state=0, solver='lbfgs', multi_class='multinomial')
 
 	train_features, train_labels = load_svmlight_file(train_data)
 	test_features, test_labels = load_svmlight_file(test_data)
@@ -32,17 +40,16 @@ def main(train_data, test_data):
 		batch_end = (i + 1) * partition_data_in_x_lines
 		batch_labels = train_labels[:batch_end]
 		batch_features = train_features.toarray()[:batch_end]
-		run_test(batch_features, batch_labels, test_features.toarray(), test_labels)
+		run_test(classifier, batch_features, batch_labels, test_features.toarray(), test_labels)
 
-def run_test(train_features, train_labels, test_features, test_labels):
+def run_test(classifier, train_features, train_labels, test_features, test_labels):
 	t1 = time.time()
-	neigh = KNeighborsClassifier(n_neighbors=3, metric='euclidean')
-	neigh.fit(train_features, train_labels)
-	y_pred = neigh.predict(test_features)
+	classifier.fit(train_features, train_labels)
+	y_pred = classifier.predict(test_features)
 	total_time = round(time.time() - t1, 2)
 	cm = confusion_matrix(test_labels, y_pred)
 	size_training_batch = len(train_labels)
-	score = neigh.score(test_features, test_labels)
+	score = classifier.score(test_features, test_labels)
 	tp = cm[0][0]
 	tn = cm[1][1]
 	fp = cm[0][1]
