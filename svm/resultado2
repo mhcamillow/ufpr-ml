@@ -1,0 +1,20 @@
+Loading data...
+/home/camillo/.local/lib/python3.6/site-packages/sklearn/model_selection/_split.py:2053: FutureWarning: You should specify a value for 'cv' instead of relying on the default value. The default value will change from 3 to 5 in version 0.22.
+  warnings.warn(CV_WARNING, FutureWarning)
+Fitting 3 folds for each of 90 candidates, totalling 270 fits
+[Parallel(n_jobs=-1)]: Using backend LokyBackend with 4 concurrent workers.
+[Parallel(n_jobs=-1)]: Done  42 tasks      | elapsed: 29.4min
+[Parallel(n_jobs=-1)]: Done 192 tasks      | elapsed: 50.7min
+[Parallel(n_jobs=-1)]: Done 270 out of 270 | elapsed: 54.9min finished
+{'C': 512.0, 'gamma': 8.0, 'kernel': 'linear'}
+0.9901
+[[1000    0    0    0    0    0    4    0    0    0]
+ [   0  997    2    0    0    4    0    0    0    0]
+ [   0    2  996    4    0    0    0    2    6    0]
+ [   4    0    2  994    0    6    0    2    0    0]
+ [   2    0    2    0  985    0    2    0    0    0]
+ [   0    0    0   10    0  987    0    0    2    0]
+ [   2    0    0    0    2    2  951    0    0    0]
+ [   0    2    2    0    6    0    0  992    0    0]
+ [   8    0    0    2    2    2    0    0  982    3]
+ [   0    2    0    2    2    0    0    4    0 1017]]
