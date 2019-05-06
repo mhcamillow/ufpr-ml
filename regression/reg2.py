@@ -9,29 +9,54 @@ from sklearn.neural_network import MLPRegressor
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 
-base = pd.read_csv('usina72.csv', sep=',', encoding = 'ISO-8859-1', error_bad_lines=False)
+def loadData():
+    return pd.read_csv('usina72.csv', sep=',', encoding = 'ISO-8859-1', error_bad_lines=False)
 
-features = base.iloc[:,[2,3,6,7,8,9]].values
-labels_1 = base.iloc[:, 0]
-labels_2 = base.iloc[:, 1]
+def getFeaturesAndLabels(dataset, index):
+    features = dataset.iloc[:,[2,3,6,7,8,9]].values
+    labels = dataset.iloc[:, index]
+    return Normalize(features, labels)
 
-scaler = MinMaxScaler()
-features = scaler.fit_transform(features)
-labels_1 = scaler.fit_transform(labels_1.values.reshape(-1, 1))
-labels_2 = scaler.fit_transform(labels_2.values.reshape(-1, 1))
+def Normalize(features, labels):
+    scaler = MinMaxScaler()
+    features = scaler.fit_transform(features)
+    labels = scaler.fit_transform(labels.values.reshape(-1, 1))
+    return (features, labels)
 
-x_train_1, x_test_1, y_train_1, y_test_1 = train_test_split(features, labels_1, test_size = 0.50, random_state = 5)
-x_train_2, x_test_2, y_train_2, y_test_2 = train_test_split(features, labels_2, test_size = 0.50, random_state = 5)
+def Split(features, labels):
+    return train_test_split(features, labels, test_size = 0.50, random_state = 5)
 
-# regressor = LinearRegression()
-# regressor = KNeighborsRegressor()
-regressor = SVR(kernel='rbf', gamma='scale', C=1.0, epsilon=0.01)
-# regressor = MLPRegressor(hidden_layer_sizes=(100, 200))
-# regressor = DecisionTreeRegressor()
-# regressor = RandomForestRegressor()
-# regressor = GradientBoostingRegressor()
-visualizer = ResidualsPlot(regressor)
+def getRegressor(regressorName):
+    if (regressorName == 'LinearRegression'):
+        return LinearRegression()
+    if (regressorName == 'KNeighborsRegressor'):
+        return KNeighborsRegressor()
+    if (regressorName == 'SVR'):
+        return SVR(kernel='rbf', gamma='scale', C=1.0, epsilon=0.01)
+    if (regressorName == 'MLPRegressor'):
+        return MLPRegressor(hidden_layer_sizes=(100, 200))
+    if (regressorName == 'DecisionTreeRegressor'):
+        return DecisionTreeRegressor()
+    if (regressorName == 'RandomForestRegressor'):
+        return RandomForestRegressor()
+    if (regressorName == 'GradientBoostingRegressor'):
+        return GradientBoostingRegressor()
 
-visualizer.fit(x_train_2, y_train_2.ravel())
-visualizer.score(x_test_2, y_test_2.ravel())
-visualizer.poof()
+# regressors = ['LinearRegression', 'KNeighborsRegressor', 'SVR', 'MLPRegressor', 'DecisionTreeRegressor', 'RandomForestRegressor', 'GradientBoostingRegressor']
+regressors = ['LinearRegression']
+
+for regressorName in regressors:
+    for index in range(2):
+        print('Running regressor ' + regressorName + ' on column ' + str(index))
+        
+        dataset = loadData()
+        features, labels = getFeaturesAndLabels(dataset, index)
+        x_train, x_test, y_train, y_test = Split(features, labels)
+
+        my_title = regressorName + ' on column ' + str(index)
+        visualizer = ResidualsPlot(getRegressor(regressorName), title=my_title)
+        visualizer.fit(x_train, y_train.ravel())
+        score = visualizer.score(x_test, y_test.ravel())
+        visualizer.poof()
+
+        print("Score: " + str(score))
